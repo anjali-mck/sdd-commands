@@ -87,10 +87,12 @@ In Plan Mode, create a comprehensive plan that covers:
 - Read `.specify/memory/constitution.md` (project principles)
 - Read `.specify/memory/master-spec.md` (existing capabilities)
 - Read `design-inputs/` for relevant contracts and schemas
-- Use Roam MCP (`user-roam-code`) if available to understand existing codebase:
-  - `roam_understand` — full codebase briefing
-  - `roam_search_symbol` — check for existing related symbols
-  - `roam_explore` — deep-dive into relevant modules
+- **Use the `context-stack` MCP** (mandatory when available — see [`.cursor/rules/context-stack.md`](../rules/context-stack.md)) to ground the plan in real code + real org knowledge:
+  - `get_context("<feature description in 1 sentence>")` — hybrid pack: code + relevant PRDs/BRDs/ADRs/Jira in one shot.
+  - `search_specs("<feature short-name OR domain>")` — sibling specs/plans/tasks to mirror or extend (and to avoid duplicate features).
+  - `search_code("<feature keyword OR likely symbol>")` — existing implementations to extend; real file paths to seed plan §File Structure.
+  - `get_dependencies("<service or major symbol the plan will modify>")` — blast radius for each major touchpoint; informs §Architecture, §Testing Strategy, and parallelism in tasks.
+  - `search_docs("<feature topic> ADR OR runbook")` — prior architectural decisions and operational guidance; cite them in §Design Decisions instead of re-deciding.
 
 #### 3b. Plan Content
 

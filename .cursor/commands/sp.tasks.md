@@ -34,6 +34,10 @@ You **MUST** consider the user input before proceeding (if not empty).
    - If data-model.md exists: Extract entities and map to user stories
    - If contracts/ exists: Map endpoints to user stories
    - If research.md exists: Extract decisions for setup tasks
+   - **Ground task file paths and ordering with `context-stack`** (see [`.cursor/rules/context-stack.md`](../rules/context-stack.md)). Before emitting a task that names a file or symbol:
+     - `search_code("<file or symbol hint>")` → confirm exact path / package; replace guessed paths with real ones.
+     - `get_dependencies("<symbol>")` for each entity/service the plan will modify → use callers/callees to (a) decide **`[P]` parallel** vs sequential within a story, (b) add foundational tasks for shared touchpoints, and (c) avoid task ordering contradictions.
+     - `search_specs("<feature short-name>")` → reuse task patterns from sibling features (test scaffolding, migration ordering, contract-first).
    - Generate tasks organized by user story (see Task Generation Rules below)
    - Generate dependency graph showing user story completion order
    - Create parallel execution examples per user story

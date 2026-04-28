@@ -31,6 +31,18 @@ Execution steps:
 
 2. Load the current spec file. Perform a structured ambiguity & coverage scan using this taxonomy. For each category, mark status: Clear / Partial / Missing. Produce an internal coverage map used for prioritization (do not output raw map unless no questions will be asked).
 
+   **Search-before-ask (mandatory) — `context-stack` MCP** (see [`.cursor/rules/context-stack.md`](../rules/context-stack.md)). Before promoting any Partial/Missing item to a user-facing question, attempt to resolve it from existing knowledge:
+
+   | Ambiguity type | Tool call (server: `context-stack`) | If hit |
+   |----------------|--------------------------------------|--------|
+   | Functional / domain behavior already decided elsewhere | `search_docs("<topic> decision OR PRD")` + `search_specs("<topic>")` | Quote source URL/path; mark category **Clear (resolved from knowledge)**; do **not** ask the user. |
+   | Data model / entity | `search_specs("<entity name> data-model")` + `search_code("<entity> struct OR class OR table")` | Reuse existing schema; mark Clear. |
+   | NFR / SLO / latency / security policy | `search_docs("<service> SLO OR latency OR runbook")` + `search_specs("master-spec <capability>")` | Adopt the established target; mark Clear. |
+   | Integration / external service | `search_code("<service> client OR endpoint")` + `search_docs("<service> contract")` | Use the real shape; mark Clear. |
+   | Terminology drift | `search_specs("<term>")` + `search_docs("<term> glossary")` | Pick the canonical term; mark Clear. |
+
+   Items resolved from `context-stack` are integrated directly into the spec in step 5 with the source URL/path appended in parentheses; they do **not** consume the 5-question budget. Only escalate to the user (step 3 onward) when `context-stack` is silent, contradictory, or the answer requires a value judgement only the user can make.
+
    Functional Scope & Behavior:
    - Core user goals & success criteria
    - Explicit out-of-scope declarations

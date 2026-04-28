@@ -68,9 +68,20 @@ Given that feature description, do this:
    - The JSON output will contain BRANCH_NAME and SPEC_FILE paths
    - For single quotes in args like "I'm Groot", use escape syntax: e.g 'I'\''m Groot' (or double-quote if possible: "I'm Groot")
 
-3. Load `.specify/templates/spec-template.md` to understand required sections.
+3. **Context-stack grounding (mandatory before drafting)** — Use the `context-stack` MCP (see [`.cursor/rules/context-stack.md`](../rules/context-stack.md)) to avoid duplicate features, reuse domain language, and anchor scope:
 
-4. Follow this execution flow:
+   | Goal | Tool call (server: `context-stack`) |
+   |------|--------------------------------------|
+   | Find similar existing specs / planned features | `search_specs("<2–4 word feature short-name + key nouns>")` |
+   | Find related PRDs/BRDs/Jira/Confluence in the org | `search_docs("<feature description in 1 sentence>")` |
+   | Verify whether the capability already partially exists in code | `get_context("<feature description>")` (auto-classifies; surfaces both `[IMPLEMENTED CODE]` and `[PLANNING]` items) |
+   | Confirm the master-spec capability bucket | `search_specs("master-spec <capability keyword>")` |
+
+   Use the results to (a) record an **Assumptions / Related work** sub-bullet in the spec linking siblings (id + URL/path, no body dumps), (b) refine the short-name to avoid collisions, and (c) flag a `[NEEDS CLARIFICATION]` if `context-stack` shows a contradicting prior decision the user must reconcile. **Do not** restate full results in `spec.md`; reference them.
+
+4. Load `.specify/templates/spec-template.md` to understand required sections.
+
+5. Follow this execution flow:
 
     1. Parse user description from Input
        If empty: ERROR "No feature description provided"
@@ -96,9 +107,9 @@ Given that feature description, do this:
     7. Identify Key Entities (if data involved)
     8. Return: SUCCESS (spec ready for planning)
 
-5. Write the specification to SPEC_FILE using the template structure, replacing placeholders with concrete details derived from the feature description (arguments) while preserving section order and headings.
+6. Write the specification to SPEC_FILE using the template structure, replacing placeholders with concrete details derived from the feature description (arguments) while preserving section order and headings.
 
-6. **Specification Quality Validation**: After writing the initial spec, validate it against quality criteria:
+7. **Specification Quality Validation**: After writing the initial spec, validate it against quality criteria:
 
    a. **Create Spec Quality Checklist**: Generate a checklist file at `FEATURE_DIR/checklists/requirements.md` using the checklist template structure with these validation items:
 
@@ -190,7 +201,7 @@ Given that feature description, do this:
 
    d. **Update Checklist**: After each validation iteration, update the checklist file with current pass/fail status
 
-7. Report completion with branch name, spec file path, checklist results, and readiness for the next phase (`/sp.clarify` or `/sp.plan`).
+8. Report completion with branch name, spec file path, checklist results, and readiness for the next phase (`/sp.clarify` or `/sp.plan`). Include a 1–3 line **Related context** note listing any sibling specs / PRDs / Jira keys surfaced by `context-stack` in step 3.
 
 **NOTE:** The script creates and checks out the new branch and initializes the spec file before writing.
 

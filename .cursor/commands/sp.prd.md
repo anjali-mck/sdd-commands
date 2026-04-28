@@ -69,21 +69,26 @@ Senior PO: WHAT/WHY, testable reqs, explicit rules, measurable success. **Do not
 
 Combine `--jira` + `--confluence` allowed. Fetch before draft. No fetch + no usable text → **ERROR**. Structure = **`.specify/templates/prd-template.md`** only (no wiki crawl for layout).
 
-## Grounding
+## Grounding (`context-stack` MCP — mandatory)
 
-Match **repo reality** (master-spec, constitution, `roam_understand`). Missing auth/DB/RPC → prerequisite or **NEW** in deps/files — never assume.
+Match **repo reality** (master-spec, constitution) and **org reality** (existing PRDs/BRDs/ADRs/Jira) via the **`context-stack`** MCP — see [`.cursor/rules/context-stack.md`](../rules/context-stack.md). Missing auth/DB/RPC → prerequisite or **NEW** in deps/files — never assume.
 
-| When | Roam |
-|------|------|
-| Before draft | `roam_understand` |
-| Symbols | `roam_search_symbol` |
-| Service | `roam_explore` |
+| When | Tool (server: `context-stack`) |
+|------|--------------------------------|
+| Before draft (codebase orientation) | `get_context("how does <domain> work today; key services + flows")` |
+| Symbols / specific endpoints | `search_code("<symbol or RPC name>")` |
+| Service deep-dive | `search_code("<service name>")` then `get_dependencies("<entrypoint symbol>")` for blast-radius |
+| **Sibling PRDs / BRDs (avoid duplication, set `Related PRDs`)** | `search_specs("<domain or feature keywords>")` + `search_docs("PRD OR BRD <domain>")` |
+| Master-spec capability bucket | `search_specs("master-spec <capability keyword>")` |
+| Jira / Confluence ambient context | `search_docs("<feature description>")` (still use Atlassian MCP to **fetch by id**; use `context-stack` for **discovery**) |
+
+**Rule:** any service / RPC / file path / data store named in §3 (Personas), §4 (Scope/Architecture), §10 (AC), or §15 (Implementation map) of the PRD MUST come from a `search_code` / `get_context` hit, **or** be tagged **NEW** with rationale. The **Related PRDs** header in the body is populated from `search_specs` + `search_docs` results, not guessed.
 
 ## Outline
 
 1. **Parse/fetch/merge** — `getJiraIssue`, `getConfluencePage`, free text → one source doc.
 
-2. **Repo** — Read master-spec, constitution; optional `roam_understand`. Checklist: services, auth, persistence, gRPC/HTTP, frontend patterns. PRD must align.
+2. **Repo** — Read master-spec, constitution; **mandatory** `get_context("<domain> services + flows + recent changes")` via `context-stack`. Checklist: services, auth, persistence, gRPC/HTTP, frontend patterns. PRD must align.
    - **Bounded context (before 4–draft):** Short/generic/vague (*sort*, *list*, …) or multi-domain → **AskQuestion** first. No silent domain from code layout.
 
 3. **Confluence (narrow)** — One `getConfluencePage` per id; **no** space-wide BRD crawl. BRD + at most one canonical follow-up. Siblings: narrow CQL `PRD-<BB>-*` or metadata only; `getConfluencePage` only to resolve conflicts.

@@ -81,11 +81,17 @@ For each decision cluster, note: what was decided, why, where in docs.
 
 ## Step 3: Check Existing ADRs
 
-Scan `history/adr/` directory. For each extracted decision:
+Scan `history/adr/` directory **and** the wider org knowledge base via the **`context-stack`** MCP (see [`.cursor/rules/context-stack.md`](../rules/context-stack.md)) — ADRs may also live in Confluence, GDocs, or sibling repos:
 
-- If covered by existing ADR → note reference
-- If conflicts with existing ADR → flag conflict
-- If not covered → mark as ADR candidate
+- `search_specs("history/adr <decision keywords>")` — prior ADRs in this repo's `history/adr/`.
+- `search_docs("<decision keywords> ADR OR decision OR architecture")` — ADRs and decision memos across Confluence/Jira/GDocs.
+- `search_code("<technology or pattern>")` — existing usage of a candidate technology, which is itself evidence the decision is already made (de facto).
+
+For each extracted decision cluster:
+
+- If covered by existing ADR (this repo or surfaced via `context-stack`) → note reference (path or URL).
+- If **conflicts** with existing ADR or with de facto code usage → flag conflict in step 6 with the citation.
+- If not covered → mark as ADR candidate.
 
 ## Step 4: Apply Significance Test (Measure)
 
