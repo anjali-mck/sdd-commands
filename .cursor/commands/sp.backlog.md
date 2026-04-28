@@ -64,7 +64,8 @@ At least one of `--confluence` or `--prd`. If both are given, **prefer `--conflu
      - `search_docs("<PRD domain> Jira OR ticket")` — find existing Jira stories/epics for this domain to **dedupe** (link to existing story instead of creating a duplicate).
      - `search_specs("<feature or domain>")` — find any prior `spec.md` / sibling features that already cover slices of this PRD; tag them in story descriptions instead of recreating tasks.
      - `search_code("<service or feature keyword>")` — derive **realistic file paths** for the story `files` field; correct any path the PRD guesses.
-     - `get_dependencies("<endpoint or symbol>")` for each major story → use callers/callees to set **Blocks** links and **dependency-sort** stories.
+     - For each major story, first derive 1–3 concrete symbol candidates via `search_code("<story keywords + likely files/endpoints>")`.
+     - Run `get_dependencies("<symbol>")` for those concrete symbols → use callers/callees to set **Blocks** links and **dependency-sort** stories.
    - Order work: **contracts/APIs first** (when applicable) → **core services** → **integration** → **client/UI** → **infra/deploy** last when it depends on artifacts (e.g. images/manifests).
    - Split stories that are too large (e.g. many unrelated files or excessive ACs); cap story points per your rubric before creating **8**-point monsters—**split** when possible.
    - For each story, internal plan shape: `summary`, `type`, `priority`, `story_points`, `story_points_rationale`, `labels`, `depends_on`, `acceptance_criteria`, `files`, `prd_sections`, `subtasks[{summary, notes?, depends_on?}]`, `description` sections. Append a **Related** sub-section listing `context-stack` citations (Jira keys, sibling spec paths, code paths) used to size and de-duplicate the story.
