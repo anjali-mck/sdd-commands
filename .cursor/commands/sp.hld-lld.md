@@ -37,7 +37,7 @@ You **MUST** consider the user input before proceeding (if not empty).
 2. **Requirements input (pick a path):**
    - **Repo-first (default):** **`FEATURE_DIR/spec.md`** and **`FEATURE_DIR/plan.md`** are **required**. If **`plan.md`** is missing: print a clear error — *"Run `/sp.plan` first."* — and stop without writing files.
    - **Confluence PRD augment:** If **`--confluence <pageId>`** is set, **fetch the PRD** and merge it into traceability (tables, links). **`plan.md` still required** unless the user is explicitly doing a **PRD-only design pass** (see below).
-   - **PRD-only pass (exception):** **`--confluence <pageId>`** and **no `plan.md`** — allowed **only** when the user’s intent is to produce HLD/LLD **from the Confluence PRD + codebase** (e.g. before `/sp.plan` exists). **WARN** that full SDD prefers **`/sp.specify`** + **`/sp.plan`** in-repo; output must still reference the PRD URL and PRD ID. If **`spec.md`** is also missing, same WARN and proceed only with PRD + Roam + master-spec/constitution as grounding.
+   - **PRD-only pass (exception):** **`--confluence <pageId>`** and **no `plan.md`** — allowed **only** when the user’s intent is to produce HLD/LLD **from the Confluence PRD + codebase** (e.g. before `/sp.plan` exists). **WARN** that full SDD prefers **`/sp.specify`** + **`/sp.plan`** in-repo; output must still reference the PRD URL and PRD ID. If **`spec.md`** is also missing, same WARN and proceed only with PRD + `context-stack` (`get_context` / `search_code` / `get_dependencies` / `search_specs`) + master-spec/constitution as grounding.
 3. **Recommended inputs** (use if present): `research.md`, `data-model.md`, `contracts/`, existing ADRs under the feature or `docs/adr/`.
 
 ## Confluence publish (when `--confluence <pageId>`)
@@ -54,16 +54,24 @@ You **MUST** consider the user input before proceeding (if not empty).
 | **Size** | Keep markdown **small enough for one MCP `body`** per page (compact tables; short sections). Shorten before upload if needed. |
 | **Source of truth** | **With `--confluence`:** **Confluence pages** are authoritative; **no** repo files unless **`--write-repo`**. **Without `--confluence`:** **repo** files under **`FEATURE_DIR`** only. |
 
-## Roam MCP Navigation
+## Context-stack MCP Navigation (mandatory grounding)
 
-Use the `user-roam-code` MCP server to ground HLD/LLD in the real codebase — **`call_mcp_tool`** / **`roam_*`** per **`roam.mdc`**; no shell-only workarounds when MCP is available.
+Use the **`context-stack`** MCP server (see [`.cursor/rules/context-stack.md`](../rules/context-stack.md)) to ground HLD/LLD in the **real** codebase + the **real** prior decisions. Call via `call_mcp_tool` with `server: context-stack`.
 
-| When | MCP Tool (`user-roam-code`) | Purpose |
-|------|----------------------------|---------|
-| Start | `roam_explore` | Codebase overview + optional symbol deep-dive |
-| Boundaries / impact | `roam_impact` (symbol) | Blast radius for major entry points |
-| File-level deps | `roam_deps` (path) | Imports and importers for LLD module map |
-| Health context | `roam_health` | Optional baseline for complexity hotspots |
+| When | Tool (`context-stack`) | Purpose |
+|------|------------------------|---------|
+| Start (HLD scoping) | `get_context("how does <feature area> work today; key services, contracts, data flow")` | Hybrid overview: code + relevant PRDs/ADRs in one pack. |
+| Boundaries / impact (HLD components → LLD modules) | `get_dependencies("<service or major symbol>")` for each major component | Blast radius for entry points; informs HLD component diagram. |
+| File-level deps (LLD module map) | `search_code("<symbol or feature keyword>")` then `get_dependencies("<path symbol>")` | Imports / importers for the LLD module map. |
+| Cross-cutting NFRs / SLOs / runbooks | `search_docs("<service> SLO OR runbook OR ADR")` | Real NFR targets and operational expectations to bake into HLD §NFR and LLD §error/observability. |
+| Sibling HLD/LLD precedent | `search_specs("<domain> hld OR lld")` | Mirror house style and avoid contradicting prior designs. |
+| PRD / BRD traceability (when **`--confluence`** PRD source) | `search_docs("<PRD title or domain>")` (in addition to the deterministic Atlassian fetch by id) | Surfaces sibling PRDs and links to weave into HLD/LLD cross-links. |
+
+**Rules**
+
+- HLD `## Architecture` and component diagram MUST cite real services / paths returned by `search_code` / `get_context`. Do **not** invent components.
+- LLD `## Module Map` MUST list real file paths from `search_code` and real call edges from `get_dependencies`. Anything new is explicitly tagged **NEW**.
+- For each external touchpoint named in HLD/LLD, run one `get_dependencies` call to confirm the contract direction (consumer vs provider).
 
 ## Atlassian MCP (PRD + publish)
 
@@ -94,7 +102,7 @@ Use **`user-Atlassian-MCP-Server`** via **`call_mcp_tool`** when **`--confluence
    - Replace `{{FEATURE_NAME}}` with the feature folder name or title from **`spec.md`**, or from the Confluence PRD title/PRD ID when using **`--confluence`** without spec.
    - Replace `{{DATE_ISO}}` with `date -u +"%Y-%m-%d"` (or document local date if constitution prefers).
    - **HLD** must stay **system-oriented**: boundaries, major components, integrations, NFR mapping — **not** per-function implementation detail.
-   - **LLD** must tie **HLD components** to **concrete modules/paths/symbols** (from Roam + repo), interfaces, sequences, errors, and test focus.
+   - **LLD** must tie **HLD components** to **concrete modules/paths/symbols** (from `context-stack` `search_code` + `get_dependencies` over the repo), interfaces, sequences, errors, and test focus.
 
 6. **Write repo (optional):** Write **`FEATURE_DIR/hld.md`** and **`lld.md`** when **repo-only** (no `--confluence`) **or** when **`--confluence --write-repo`**. With **`--confluence`** alone, **skip** local files unless **`--write-repo`**. If writing and files exist, **merge intelligently** where appropriate.
 

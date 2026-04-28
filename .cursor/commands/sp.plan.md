@@ -24,6 +24,19 @@ You **MUST** consider the user input before proceeding (if not empty).
 
 2. **Load context**: Read FEATURE_SPEC and `.specify/memory/constitution.md`. Load IMPL_PLAN template (already copied).
 
+   **Context-stack grounding (mandatory)** — Use the `context-stack` MCP (see [`.cursor/rules/context-stack.md`](../rules/context-stack.md)) to ground the plan in real code and prior decisions:
+
+   | Goal | Tool (server: `context-stack`) |
+   |------|--------------------------------|
+   | Codebase overview for the feature area | `get_context("how does <area> work in the codebase today")` |
+   | Existing services / endpoints / files to extend | `search_code("<feature keywords + service hints>")` |
+   | Blast radius for any symbol or endpoint the plan will modify | `get_dependencies("<symbol or endpoint>")` for **each** likely touchpoint |
+   | Sibling plans / patterns to reuse | `search_specs("<feature short-name OR domain>")` |
+   | Prior architectural decisions / ADRs / runbooks | `search_docs("<topic> ADR OR architecture")` + `search_specs("history/adr <topic>")` |
+   | Related Jira / Confluence context | `search_docs("<feature description>")` |
+
+   Use results to populate **Technical Context** with **real** file/path references, to derive **research.md** "Decision / Rationale / Alternatives" entries from existing ADRs (cite source), and to seed Phase 0 unknowns only with questions `context-stack` could not answer. **Do not** invent infra; if `search_code` shows no implementation for a claimed dependency, mark it as **NEW** and call it out.
+
 3. **Execute plan workflow**: Follow the structure in IMPL_PLAN template to:
    - Fill Technical Context (mark unknowns as "NEEDS CLARIFICATION")
    - Fill Constitution Check section from constitution
@@ -44,13 +57,15 @@ You **MUST** consider the user input before proceeding (if not empty).
    - For each dependency → best practices task
    - For each integration → patterns task
 
-2. **Generate and dispatch research agents**:
+2. **Resolve unknowns via `context-stack` first, then research**:
 
    ```text
    For each unknown in Technical Context:
-     Task: "Research {unknown} for {feature context}"
-   For each technology choice:
-     Task: "Find best practices for {tech} in {domain}"
+     1) get_context("<unknown> in current codebase OR org docs")  → resolve from internal knowledge first
+     2) If still unknown: search_docs("<unknown> best practices OR ADR")
+     3) If still unknown: external research task — "Research {unknown} for {feature context}"
+   For each technology choice already used in the org:
+     search_code("<tech> usage") + search_docs("<tech> ADR")  → adopt the established pattern instead of re-deciding.
    ```
 
 3. **Consolidate findings** in `research.md` using format:

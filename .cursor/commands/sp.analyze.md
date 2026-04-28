@@ -77,6 +77,18 @@ Create internal representations (do not include raw artifacts in output):
 
 Focus on high-signal findings. Limit to 50 findings total; aggregate remainder in overflow summary.
 
+**Use `context-stack` (read-only) to amplify each pass** (see [`.cursor/rules/context-stack.md`](../rules/context-stack.md)):
+
+| Pass | `context-stack` lookup | What it adds |
+|------|------------------------|--------------|
+| Underspecification (C) | `search_code("<file path or symbol>")` for every file/component referenced in tasks/plan | Flags tasks pointing at files that **do not exist** in the codebase. |
+| Constitution Alignment (D) | `search_docs("<principle keyword> ADR OR runbook")` | Surfaces ADRs/runbooks that contradict spec/plan claims. |
+| Coverage Gaps (E) | `get_dependencies("<symbol>")` for each entity/endpoint in spec | Reveals callers/callees the tasks forgot (hidden coupling). |
+| Inconsistency (F) | `search_specs("<term>")` across the repo | Catches terminology drift vs sibling specs and master-spec. |
+| Duplication (A) | `search_specs("<feature short-name OR domain>")` | Surfaces sibling features that overlap or duplicate this one. |
+
+These lookups are still **read-only** and inform finding rows; they never modify artifacts.
+
 #### A. Duplication Detection
 
 - Identify near-duplicate requirements

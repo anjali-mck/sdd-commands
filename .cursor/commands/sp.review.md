@@ -14,15 +14,16 @@ You **MUST** consider the user input before proceeding (if not empty).
 - **Tasks**: Append findings to `tasks.md` by default. **Opt out** with **`report-only`**, **`no-tasks`**, or **`no-append`** (summary only; no file writes).
 - **`scan all`**: If present in `$ARGUMENTS`, do not restrict to code-only paths; otherwise follow **Scope: code only** below.
 
-## Roam MCP Navigation
+## Context-stack MCP Navigation
 
-Use the `user-roam-code` MCP server to understand the codebase context alongside CodeRabbit review.
+Use the `context-stack` MCP server (see [`.cursor/rules/context-stack.md`](../rules/context-stack.md)) to understand the codebase context alongside CodeRabbit and to triage review findings.
 
-| When | MCP Tool (`user-roam-code`) | Purpose |
-|------|----------------------------|---------|
-| Understanding changed symbols | `roam_diff` | Blast radius of uncommitted changes |
-| Verifying fix impact | `roam_impact` (symbol) | What else breaks if we change a finding |
-| Finding affected tests | `roam_affected_tests` (target) | Tests that need updating after fixes |
+| When | Tool (server: `context-stack`) | Purpose |
+|------|--------------------------------|---------|
+| Understanding changed symbols | For each path in `git diff --name-only`: `search_code("<filename>")` and `get_dependencies("<changed symbol>")` | Blast radius of uncommitted changes |
+| Verifying fix impact | `get_dependencies("<symbol>")` for any symbol a finding wants you to modify | What else breaks if we change a finding |
+| Finding affected tests | `get_dependencies("<changed symbol>")` then filter results to test files (`*_test.*`, `*.spec.*`, `tests/`) | Tests that need updating after fixes |
+| Cross-referencing prior reviews / decisions | `search_docs("<rule_id> OR <CR finding gist>")` | Surfaces ADRs, runbooks, prior CR/SG fixes that inform the verdict |
 
 ## Overview
 

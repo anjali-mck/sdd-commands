@@ -109,6 +109,11 @@ You **MUST** consider the user input before proceeding (if not empty).
    - **Follow TDD approach**: Execute test tasks before their corresponding implementation tasks
    - **File-based coordination**: Tasks affecting the same files must run sequentially
    - **Validation checkpoints**: Verify each phase completion before proceeding
+   - **Reuse before you write — `context-stack` MCP** (see [`.cursor/rules/context-stack.md`](../rules/context-stack.md)):
+     - Before creating a new helper / utility / model, run `search_code("<intent or symbol shape>")` to find existing implementations to reuse or extend.
+     - Before modifying a function/endpoint that other modules call, run `get_dependencies("<symbol>")` to size blast radius and to inform the test plan (which callers must keep working).
+     - Before adopting a pattern (validation, error handling, retry, logging), run `search_code("<pattern keyword>")` to mirror the existing convention rather than introduce a new one.
+     - Citations: when a task description ends up grounded in an existing file, append a comment-free reference in the PR body / task notes (no inline narration in code).
 
 7. Implementation execution rules:
    - **Setup first**: Initialize project structure, dependencies, configuration

@@ -46,6 +46,9 @@ Follow this execution flow:
    - Read `.specify/templates/tasks-template.md` and ensure task categorization reflects new or removed principle-driven task types (e.g., observability, versioning, testing discipline).
    - Read each command file in `.specify/templates/commands/*.md` (including this one) to verify no outdated references (agent-specific names like CLAUDE only) remain when generic guidance is required.
    - Read any runtime guidance docs (e.g., `README.md`, `docs/quickstart.md`, or agent-specific guidance files if present). Update references to principles changed.
+   - **Wider impact check via `context-stack`** (see [`.cursor/rules/context-stack.md`](../rules/context-stack.md)):
+     - `search_specs("constitution OR principle <changed principle keyword>")` — find prior specs / plans / tasks that cite the principle being changed; list them in the Sync Impact Report under **Templates / artifacts requiring updates** so they can be revisited.
+     - `search_docs("<principle keyword> policy OR ADR")` — surface org-wide policy docs that may need to be reconciled with a principle change.
 
 5. Produce a Sync Impact Report (prepend as an HTML comment at top of the constitution file after update):
    - Version change: old → new

@@ -28,8 +28,10 @@ You are an expert AI assistant specializing in Spec-Driven Development (SDD). Yo
 ### 1. Authoritative Source Mandate:
 Agents MUST prioritize and use MCP tools and CLI commands for all information gathering and task execution. NEVER assume a solution from internal knowledge; all methods require external verification.
 
+**Canonical knowledge MCP — `context-stack`:** For any cross-cutting question about "what does the codebase do?", "is there a related PRD/BRD/ADR/Jira already?", "what is the blast radius of this symbol?", or "are there sibling specs?", agents MUST consult the `context-stack` MCP first. See [`context-stack.md`](context-stack.md) for the tool catalogue (`get_context`, `search_code`, `search_docs`, `search_specs`, `get_dependencies`) and the **search-before-assert / search-before-ask / search-before-split** policy.
+
 ### 2. Execution Flow:
-Treat MCP servers as first-class tools for discovery, verification, execution, and state capture. PREFER CLI interactions (running commands and capturing outputs) over manual file creation or reliance on internal knowledge.
+Treat MCP servers as first-class tools for discovery, verification, execution, and state capture. PREFER CLI interactions (running commands and capturing outputs) over manual file creation or reliance on internal knowledge. Use `context-stack` for **discovery and grounding**; use targeted MCPs (Atlassian, GitHub, Linear, Figma) for **deterministic fetch and write** by id.
 
 ### 3. Knowledge capture (PHR) for Every User Input.
 After completing requests, you **MUST** create a PHR (Prompt History Record).

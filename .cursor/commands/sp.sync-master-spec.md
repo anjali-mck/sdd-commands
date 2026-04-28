@@ -10,16 +10,17 @@ $ARGUMENTS
 
 You **MUST** consider the user input before proceeding (if not empty).
 
-## Roam MCP Navigation
+## Context-stack MCP Navigation (mandatory)
 
-Use the `user-roam-code` MCP server to understand implementation details for accurate master spec sync.
+Use the **`context-stack`** MCP server (see [`.cursor/rules/context-stack.md`](../rules/context-stack.md)) to map implementation accurately into master-spec capability sections.
 
-| When | MCP Tool (`user-roam-code`) | Purpose |
-|------|----------------------------|---------|
-| Understand feature implementation | `roam_explore` (symbol) | Codebase overview + symbol deep-dive for implementation mapping |
-| Get precise file context | `roam_context` (symbol) | Minimal files + line ranges for key symbols |
-| Trace dependencies | `roam_deps` (path) | File-level imports to map integration patterns |
-| Find all related symbols | `roam_search_symbol` (query) | Find symbols by name for comprehensive mapping |
+| When | Tool (server: `context-stack`) | Purpose |
+|------|--------------------------------|---------|
+| Understand feature implementation | `get_context("<feature short-name>: implemented behavior, services, endpoints")` | Hybrid overview that pulls **`[IMPLEMENTED CODE]`** + relevant planning docs in one pack. |
+| Locate the actual code for a feature | `search_code("<feature keyword OR symbol>")` | Real file paths and line ranges for the **Implementation Details** block. |
+| Trace dependencies (integration patterns) | `get_dependencies("<symbol or endpoint>")` | Callers/callees → identifies which capability buckets the change touches (gRPC vs HTTP, DB, observability). |
+| Find all related symbols | `search_code("<query>")` | Comprehensive mapping for capability rollups. |
+| Cross-reference prior master-spec entries | `search_specs("master-spec <capability keyword>")` | Avoid duplicate sub-sections; pick the right next number (1.6, 1.7, …). |
 
 ## Outline
 
@@ -30,8 +31,8 @@ Use the `user-roam-code` MCP server to understand implementation details for acc
    - Read `.specify/memory/master-spec.md`
    - Read `documentation/master-spec-template.md` (integration pattern templates)
    - Read `.specify/memory/constitution.md` (Constitution - includes TDD and Active Rules principles)
-   - Call `roam_explore` (MCP: `user-roam-code`) to understand codebase structure relevant to the feature
-   - Call `roam_context` (MCP: `user-roam-code`) for key symbols to get precise file + line ranges
+   - Call `get_context("<feature short-name> implementation overview")` (MCP: `context-stack`) to understand codebase structure relevant to the feature
+   - Call `search_code("<key symbol>")` (MCP: `context-stack`) for each key symbol to get precise file + line ranges; follow with `get_dependencies("<symbol>")` when integration patterns matter
 
 3. **Analyze implementation**:
    - Analyze FEATURE_SPEC to identify what was implemented

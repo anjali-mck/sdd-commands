@@ -47,6 +47,10 @@ You **MUST** consider the user input before proceeding (if not empty). Use it fo
    - Read **`.specify/templates/brd-template.md`** if it exists — use it as the **rubric** (score coverage against its themes, not literal heading text if the BRD uses different labels). If the template is missing, use the **Refinement dimensions** table below as the rubric only.  
    - Optionally read **`.specify/memory/master-spec.md`** (or repo README / architecture docs) when the BRD names **specific systems, services, or repositories** — flag **stale, vague, or inconsistent** references.  
    - Optionally read **`.specify/memory/constitution.md`** when the BRD touches **cross-cutting security, quality gates, or engineering policy** — flag **misalignment** as a gap or risk.
+   - **`context-stack` cross-checks** (see [`.cursor/rules/context-stack.md`](../rules/context-stack.md)):
+     - `search_specs("<domain keywords>")` — surfaces sibling **BRDs / PRDs / capability sections** in master-spec; informs the **Capability map**, **Suggested slices**, and duplicate-detection.
+     - `search_docs("<domain> BRD OR PRD OR strategy")` — finds related Confluence/Jira/GDoc context (strategy memos, prior BRD reviews) the BRD should reference.
+     - `search_code("<system or service named in the BRD>")` — confirms whether systems the BRD names actually exist; flag **stale/invented** references in the **Risks** or **Must-fix gaps** section.
 
 4. **Persona & scope**  
    Act as a **senior product / business analyst** reviewing a **Business Requirements Document (BRD)**.  
