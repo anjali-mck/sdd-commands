@@ -87,7 +87,7 @@ In Plan Mode, create a comprehensive plan that covers:
 - Read `.specify/memory/constitution.md` (project principles)
 - Read `.specify/memory/master-spec.md` (existing capabilities)
 - Read `design-inputs/` for relevant contracts and schemas
-- **Use the `context-stack` MCP** (mandatory when available — see [`.cursor/rules/context-stack.md`](../rules/context-stack.md)) to ground the plan in real code + real org knowledge:
+- **Use the `context-stack` MCP** when available (see [`.cursor/rules/context-stack.md`](../rules/context-stack.md)) — a few targeted lookups to ground the plan in real code + real org knowledge. Where doc and code disagree, **code wins** for current behavior:
   - `get_context("<feature description in 1 sentence>")` — hybrid pack: code + relevant PRDs/BRDs/ADRs/Jira in one shot.
   - `search_specs("<feature short-name OR domain>")` — sibling specs/plans/tasks to mirror or extend (and to avoid duplicate features).
   - `search_code("<feature keyword OR likely symbol>")` — existing implementations to extend; real file paths to seed plan §File Structure.

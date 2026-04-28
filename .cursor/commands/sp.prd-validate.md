@@ -30,15 +30,11 @@ This is **not** a full legal/compliance review; it is **developer pickup readine
 ## Grounding (before scoring)
 
 1. Read **`.specify/templates/prd-template.md`** — the canonical section list and table shapes.
-2. **Verify implementation claims with `context-stack`** (see [`.cursor/rules/context-stack.md`](../rules/context-stack.md)). For every service / RPC / endpoint / file path / table the PRD names:
-   - `search_code("<claim>")` → **Pass** if found in code, **Fail (invented)** if not, **Partial (stale)** if only outdated references appear.
-   - `get_dependencies("<symbol>")` for any symbol the PRD says will be modified — used to score **Section 15 Implementation Map**.
-3. **Verify cross-document consistency with `context-stack`**:
-   - `search_specs("<domain or capability>")` → confirms the PRD aligns with master-spec / sibling PRDs; flags duplication or contradiction.
-   - `search_docs("<topic> ADR OR runbook")` → flags PRD claims that contradict an existing ADR or runbook.
+2. **Spot-check implementation claims with `context-stack`** when available (see [`.cursor/rules/context-stack.md`](../rules/context-stack.md)). Pick the **highest-impact** services / RPCs / endpoints / file paths / tables the PRD names (not every one) and verify with `search_code("<claim>")`; use `get_dependencies("<symbol>")` for any symbol the PRD says will be modified. Where doc and code disagree, **code wins** — record the gap as a **Blocker** or **Improvement**, citing both.
+3. **Spot-check cross-document consistency with `context-stack`**:
+   - `search_specs("<domain or capability>")` for sibling PRDs / master-spec alignment.
+   - `search_docs("<topic> ADR OR runbook")` for ADRs/runbooks that may contradict the PRD.
 4. Optionally skim **`.specify/memory/master-spec.md`** and **`.specify/memory/constitution.md`** when the PRD references capabilities, SDD gates, or cross-service behavior — `search_specs` already surfaces these but a direct read is fine for short files.
-
-When a `context-stack` lookup contradicts the PRD, record the citation (path or URL) in the **Blockers** or **Improvements** bullet so the PO can act on it.
 
 ## Validation dimensions
 
@@ -53,7 +49,7 @@ Score each dimension **Pass / Partial / Fail** and give **evidence** (quote or s
 | **Stories** | Section 11: stories map to PRs and AC columns (no orphan stories). |
 | **UX / NFRs** | Section 6–8 and 12: if UI — journeys and UX table meaningful; if backend-only — explicitly **N/A** where template allows. NFRs not blank when latency, security, or reliability matter. |
 | **Dependencies & risks** | Section 13: dependencies name **what** and **why**; risks have mitigation. **`[DECISION NEEDED]`**: **at most 3** open decisions; each has options and owner (per `/sp.prd` guidance). |
-| **Implementation hints** | Section 15 appendix: implementation map lists **credible** paths or services; **MUST** match `context-stack` `search_code` hits when checked (or be tagged **NEW** with rationale). |
+| **Implementation hints** | Section 15 appendix (or the equivalent files/implementation section in the active `prd-template.md`): paths or services should be **credible** — when verified via `search_code` they should resolve, or be tagged **NEW** with rationale. |
 | **Traceability** | Metadata (section 1): BRD / Jira / Figma / related PRDs present when the org expects them; capability / master-spec id if required by team process. |
 
 ## Automatic red flags (usually Fail)

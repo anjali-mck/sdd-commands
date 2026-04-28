@@ -54,9 +54,9 @@ You **MUST** consider the user input before proceeding (if not empty).
 | **Size** | Keep markdown **small enough for one MCP `body`** per page (compact tables; short sections). Shorten before upload if needed. |
 | **Source of truth** | **With `--confluence`:** **Confluence pages** are authoritative; **no** repo files unless **`--write-repo`**. **Without `--confluence`:** **repo** files under **`FEATURE_DIR`** only. |
 
-## Context-stack MCP Navigation (mandatory grounding)
+## Context-stack MCP Navigation
 
-Use the **`context-stack`** MCP server (see [`.cursor/rules/context-stack.md`](../rules/context-stack.md)) to ground HLD/LLD in the **real** codebase + the **real** prior decisions. Call via `call_mcp_tool` with `server: context-stack`.
+When the **`context-stack`** MCP is available (see [`.cursor/rules/context-stack.md`](../rules/context-stack.md)), use a few targeted calls to ground HLD/LLD in the real codebase and prior decisions. Where doc and code disagree, **code wins** for current behavior; surface the gap in the HLD/LLD body. Call via `call_mcp_tool` with `server: context-stack`.
 
 | When | Tool (`context-stack`) | Purpose |
 |------|------------------------|---------|
@@ -67,11 +67,11 @@ Use the **`context-stack`** MCP server (see [`.cursor/rules/context-stack.md`](.
 | Sibling HLD/LLD precedent | `search_specs("<domain> hld OR lld")` | Mirror house style and avoid contradicting prior designs. |
 | PRD / BRD traceability (when **`--confluence`** PRD source) | `search_docs("<PRD title or domain>")` (in addition to the deterministic Atlassian fetch by id) | Surfaces sibling PRDs and links to weave into HLD/LLD cross-links. |
 
-**Rules**
+**Guidance**
 
-- HLD `## Architecture` and component diagram MUST cite real services / paths returned by `search_code` / `get_context`. Do **not** invent components.
-- LLD `## Module Map` MUST list real file paths from `search_code` and real call edges from `get_dependencies`. Anything new is explicitly tagged **NEW**.
-- For each external touchpoint named in HLD/LLD, run one `get_dependencies` call to confirm the contract direction (consumer vs provider).
+- HLD architecture / component diagrams should cite real services / paths returned by `search_code` / `get_context`; tag anything not yet implemented as **NEW**.
+- LLD module map should list real file paths from `search_code` and real call edges from `get_dependencies` where they meaningfully reduce ambiguity; tag new code as **NEW**.
+- For external touchpoints, a single `get_dependencies` call usually clarifies the contract direction (consumer vs provider).
 
 ## Atlassian MCP (PRD + publish)
 

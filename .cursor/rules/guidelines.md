@@ -30,6 +30,8 @@ Agents MUST prioritize and use MCP tools and CLI commands for all information ga
 
 **Canonical knowledge MCP — `context-stack`:** For any cross-cutting question about "what does the codebase do?", "is there a related PRD/BRD/ADR/Jira already?", "what is the blast radius of this symbol?", or "are there sibling specs?", agents MUST consult the `context-stack` MCP first. See [`context-stack.md`](context-stack.md) for the tool catalogue (`get_context`, `search_code`, `search_docs`, `search_specs`, `get_dependencies`) and the **search-before-assert / search-before-ask / search-before-split** policy.
 
+**Code wins over docs (hard rule).** Documentation drifts; the codebase is the ground truth for **current behavior**. When `context-stack` shows that code disagrees with a doc (Confluence/Jira/GDoc/PRD/BRD/ADR/runbook), treat the **code** as authoritative for "what the system does today" and the **doc** as authoritative for "what was intended". Surface the gap explicitly in the artifact you are producing — never silently parrot a stale doc.
+
 ### 2. Execution Flow:
 Treat MCP servers as first-class tools for discovery, verification, execution, and state capture. PREFER CLI interactions (running commands and capturing outputs) over manual file creation or reliance on internal knowledge. Use `context-stack` for **discovery and grounding**; use targeted MCPs (Atlassian, GitHub, Linear, Figma) for **deterministic fetch and write** by id.
 

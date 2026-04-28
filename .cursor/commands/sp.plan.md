@@ -24,7 +24,7 @@ You **MUST** consider the user input before proceeding (if not empty).
 
 2. **Load context**: Read FEATURE_SPEC and `.specify/memory/constitution.md`. Load IMPL_PLAN template (already copied).
 
-   **Context-stack grounding (mandatory)** — Use the `context-stack` MCP (see [`.cursor/rules/context-stack.md`](../rules/context-stack.md)) to ground the plan in real code and prior decisions:
+   **Context-stack grounding** — When the `context-stack` MCP is available (see [`.cursor/rules/context-stack.md`](../rules/context-stack.md)), use a small number of targeted lookups to ground the plan in real code and prior decisions. Where doc and code disagree, **code wins** for current behavior:
 
    | Goal | Tool (server: `context-stack`) |
    |------|--------------------------------|

@@ -10,9 +10,9 @@ $ARGUMENTS
 
 You **MUST** consider the user input before proceeding (if not empty).
 
-## Context-stack MCP Navigation (mandatory)
+## Context-stack MCP Navigation
 
-Use the **`context-stack`** MCP server (see [`.cursor/rules/context-stack.md`](../rules/context-stack.md)) to map implementation accurately into master-spec capability sections.
+When the **`context-stack`** MCP is available (see [`.cursor/rules/context-stack.md`](../rules/context-stack.md)), use it to map the **actual** implementation into master-spec capability sections. Sync documents what code **does** today, so where Jira/PRD/spec text disagrees with the codebase, **code wins** — record what was shipped, not what was promised.
 
 | When | Tool (server: `context-stack`) | Purpose |
 |------|--------------------------------|---------|
